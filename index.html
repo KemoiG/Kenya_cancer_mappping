@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Distribution in Selected Kenya Counties - Proportional Symbol Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cancer Distribution in Selected Kenya Counties - Proportional Symbol Map</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([1.0, 38.0], 6);
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Data for cancer cases in selected Kenya counties
+        const selectedCounties = [
+            { name: "Nairobi", lat: -1.2921, lon: 36.8219, cases: 2000 },
+            { name: "Kericho", lat: -0.3687, lon: 35.2855, cases: 300 },
+            { name: "Mombasa", lat: -4.0435, lon: 39.6682, cases: 1500 },
+            { name: "Garissa", lat: -0.4536, lon: 39.6466, cases: 300 },
+            { name: "Kakamega", lat: 0.2827, lon: 34.7519, cases: 550 },
+            { name: "Turkana", lat: 3.1166, lon: 35.5966, cases: 250 },
+            { name: "Wajir", lat: 1.7471, lon: 40.0573, cases: 200 },
+            { name: "Marsabit", lat: 2.3284, lon: 37.9939, cases: 150 }
+        ];
+
+        // Function to add proportional symbols
+        function addProportionalSymbols(data) {
+            const maxCases = Math.max(...data.map(county => county.cases));
+            const maxRadius = 50; // Maximum radius in pixels
+
+            data.forEach(county => {
+                const radius = Math.sqrt(county.cases / maxCases) * maxRadius;
+                
+                L.circleMarker([county.lat, county.lon], {
+                    radius: radius,
+                    fillColor: "#ff0000",
+                    color: "#000",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.6
+                }).addTo(map).bindPopup(`<strong>${county.name}</strong><br>${county.cases} cases`);
+            });
+        }
+
+        // Add proportional symbols to the map
+        addProportionalSymbols(selectedCounties);
+    </script>
+</body>
+</html>
